@@ -1,42 +1,46 @@
-;****************************************************************************************************************************
-;Program name: "Floating IO".  This program demonstrates the input of multiple float numbers from the standard input device *
-;using a single instruction and the output of multiple float numbers to the standard output device also using a single      *
-;instruction.  Copyright (C) 2019 Floyd Holliday.                                                                           *
+;******************************************************************************;
+;Program name: "calculatePerimeter".  This program reads the length and width of
+;a rectangle through the standard input device.  It then calculates the
+;perimeter and average side length of said rectangle, and outputs the result to
+;the standard output device.  The perimeter is returned.
+;Copyright (C) 2021 Sean Javiya.                                                                           *
 ;                                                                                                                           *
-;This file is part of the software program "Floating IO".                                                                   *
-;Floating IO is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License   *
-;version 3 as published by the Free Software Foundation.                                                                    *
-;Floating IO is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied          *
-;warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.     *
-;A copy of the GNU General Public License v3 is available here:  <https:;www.gnu.org/licenses/>.                            *
-;****************************************************************************************************************************
+;This file is part of the software rectangePerimeter                                                                   *
+;rectangePerimeter is free software: you can redistribute it and/or modify it
+;under the terms of the GNU General Public License version 3 as published by the
+;Free Software Foundation.                                                                    *
+;rectangePerimeter is distributed in the hope that it will be useful, but
+;WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+;FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+;details.  A copy of the GNU General Public License v3 is available here:
+;<https:;www.gnu.org/licenses/>.                            *
+;******************************************************************************;
 
 
-
-
-;========1=========2=========3=========4=========5=========6=========7=========8=========9=========0=========1=========2=========3**
-;
+;------------------------------------------------------------------------------;
+;------------------------------------------------------------------------------;
 ;Author information
-;  Author name: Floyd Holliday
-;  Author email: holliday@fullerton.edu
+;  Author name: Sean Javiya
+;  Author email: seanjaviya@csu.fullerton.edu
 ;
 ;Program information
-;  Program name: Floating IO
-;  Programming languages: One modules in C and one module in X86
-;  Date program began: 2019-Oct-25
-;  Date of last update: 2019-Oct-26
-;  Date of reorganization of comments: 2019-Oct-29
-;  Files in this program: manage-floats.c, float-input-output.asm
-;  Status: Finished.  The program was tested extensively with no errors in Xubuntu19.04.
+;  Program name: rectangePerimeter
+;  Programming languages: One modules in C++ and one module in X86
+;  Date program began: 2021-Feb-1
+;  Date of last update: 2021-Feb-13
+;  Date of reorganization of comments: 2021-Feb-13
+;  Files in this program: rectangle.cpp, perimeter.asm
+;  Status: Finished.
+;  The program was tested extensively with no errors in Ubuntu 20.04
 ;
 ;This file
-;   File name: float-input-output.asm
+;   File name: perimeter.asm
 ;   Language: X86 with Intel syntax.
 ;   Max page width: 132 columns
-;   Assemble: nasm -f elf64 -l float-input-output.lis -o float-input-output.o float-input-output.asm
+;   Assemble:        nasm -f elf64 -l perimeter.lis -o perimeter.o perimeter.asm
+;------------------------------------------------------------------------------;
+;------------------------------------------------------------------------------;
 
-
-;===== Begin code area ================================================================================================
 
 extern printf
 extern scanf
@@ -44,8 +48,8 @@ global calculatePerimeter
 
 segment .data
 input_float db "%lf", 0
-perim db "The perimeter is %lf", 10, 0
-avg db "The length of the average side is %lf", 10, 0
+perim db "The perimeter is %8.15lf", 10, 0
+avg db "The length of the average side is %8.15lf", 10, 0
 goodbye db "I hope you enjoyed your rectangle.", 10, "The assembly program will send the perimeter to the main function.", 10, 0
 height_prompt db "Enter the height:   ", 0
 length_prompt db "Enter the length:   ", 0
@@ -89,9 +93,9 @@ pop rax
 
 movsd xmm15, xmm0
 movsd xmm14, xmm15
-mov r15, 2
-cvtsi2sd xmm13, r15
-mulsd xmm14, xmm13
+;mov r15, 2
+;cvtsi2sd xmm13, r15
+addsd xmm14, xmm15
 ;xmm14 holds 2x xmm15
 ;xmm15 holds the width
 
@@ -115,13 +119,13 @@ movsd xmm13, xmm0
 movsd xmm12, xmm13
 mov r15, 2
 cvtsi2sd xmm11, r15
-mulsd xmm12, xmm11
+addsd xmm12, xmm13
 ;xmm12 holds 2x xmm13
 ;xmm13 holds the width
 
 addsd xmm14, xmm12
 ;xmm14 holds the perimeter (2x length + 2x width)
-addsd xmm15, xmm13
+addsd xmm15, xmm13;15 holds l + w
 ;xmm11 holds "2.0"
 divsd xmm15, xmm11
 ;xmm15 holds the average

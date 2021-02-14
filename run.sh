@@ -8,15 +8,15 @@ rm *.o
 rm *.out
 
 echo "Assemble perimeter.asm"
-nasm -f elf64 -g -F dwarf -l perimeter.lis -o perimeter.o perimeter.asm
+nasm -f elf64 -l perimeter.lis -o perimeter.o perimeter.asm
 
-echo "Compile rectangle.cpp using the gcc compiler standard 2017"
+echo "Compile rectangle.cpp using the gcc compiler"
 gcc -c -Wall -m64 -no-pie -o rectangle.o rectangle.cpp #-std=c17
 
-echo "Link the object files using the gcc linker standard 2017"
-gcc -m64 -no-pie -o average-sides.out rectangle.o perimeter.o -std=c17
+echo "Link the object files(rectangle and perimeter) using the gcc linker"
+gcc -m64 -no-pie -o rectanglePerimeter.out rectangle.o perimeter.o -std=c17
 
-echo "Run the program calculatePerimeter:"
-./average-sides.out
+echo "Run the program rectanglePerimeter:"
+./rectanglePerimeter.out
 
 echo "The script file will terminate"
