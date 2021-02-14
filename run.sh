@@ -11,7 +11,7 @@ echo "Assemble perimeter.asm"
 nasm -f elf64 -l perimeter.lis -o perimeter.o perimeter.asm
 
 echo "Compile rectangle.cpp using the gcc compiler"
-gcc -c -Wall -m64 -no-pie -o rectangle.o rectangle.cpp #-std=c17
+gcc -c -Wall -m64 -no-pie -o rectangle.o rectangle.cpp
 
 echo "Link the object files(rectangle and perimeter) using the gcc linker"
 gcc -m64 -no-pie -o rectanglePerimeter.out rectangle.o perimeter.o -std=c17

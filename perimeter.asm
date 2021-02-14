@@ -1,5 +1,5 @@
 ;******************************************************************************;
-;Program name: "calculatePerimeter".  This program reads the length and width of
+;Program name: "rectangePerimeter".  This program reads the length and width of
 ;a rectangle through the standard input device.  It then calculates the
 ;perimeter and average side length of said rectangle, and outputs the result to
 ;the standard output device.  The perimeter is returned.
@@ -41,7 +41,6 @@
 ;------------------------------------------------------------------------------;
 ;------------------------------------------------------------------------------;
 
-
 extern printf
 extern scanf
 global calculatePerimeter
@@ -60,89 +59,89 @@ calculatePerimeter:
 ;preserve the registers onto the stack
 push rbp
 mov  rbp,rsp
-push rdi                                                    ;Backup rdi
-push rsi                                                    ;Backup rsi
-push rdx                                                    ;Backup rdx
-push rcx                                                    ;Backup rcx
-push r8                                                     ;Backup r8
-push r9                                                     ;Backup r9
-push r10                                                    ;Backup r10
-push r11                                                    ;Backup r11
-push r12                                                    ;Backup r12
-push r13                                                    ;Backup r13
-push r14                                                    ;Backup r14
-push r15                                                    ;Backup r15
-push rbx                                                    ;Backup rbx
-pushf                                                       ;Backup rflags
+push rdi
+push rsi
+push rdx
+push rcx
+push r8
+push r9
+push r10
+push r11
+push r12
+push r13
+push r14
+push r15
+push rbx
+pushf
 
 ;ask for the height
 push qword 0
 mov rax, 0
-mov rdi, height_prompt
+mov rdi, height_prompt           ;"Enter the height:   ", 0
 call printf
 pop rax
+
 ;read in the height
 push qword 0
 push qword 0
 mov rax, 0
 mov rsi, rsp
-mov rdi, input_float
+mov rdi, input_float             ;"%lf", 0
 call scanf
 pop rax
 pop rax
 
-movsd xmm15, xmm0
+;move the height value into a preserved register, and compute 2x the height
+movsd xmm15, xmm0               ;xmm15 holds the height value
 movsd xmm14, xmm15
-;mov r15, 2
-;cvtsi2sd xmm13, r15
-addsd xmm14, xmm15
-;xmm14 holds 2x xmm15
-;xmm15 holds the width
+addsd xmm14, xmm15              ;xmm14 holds 2x height value
 
 ;ask for the length
 push qword 0
 mov rax, 0
-mov rdi, length_prompt
+mov rdi, length_prompt          ;"Enter the length:   ", 0
 call printf
 pop rax
+
 ;read in the length
 push qword 0
 push qword 0
 mov rax, 0
 mov rsi, rsp
-mov rdi, input_float
+mov rdi, input_float            ;"%lf", 0
 call scanf
 pop rax
 pop rax
 
-movsd xmm13, xmm0
+;move the length value into a preserved register, and compute 2x the length
+movsd xmm13, xmm0               ;xmm13 holds the length value
 movsd xmm12, xmm13
+addsd xmm12, xmm13              ;xmm12 holds 2x the length value
+
+;calculate the perimeter
+addsd xmm14, xmm12              ;xmm14 holds the perimeter (2xlength + 2xheight)
+
+;calculate the average
+addsd xmm15, xmm13              ;xmm15 holds length + height
 mov r15, 2
-cvtsi2sd xmm11, r15
-addsd xmm12, xmm13
-;xmm12 holds 2x xmm13
-;xmm13 holds the width
+cvtsi2sd xmm11, r15             ;xmm11 holds "2.0"
+divsd xmm15, xmm11              ;xmm15 holds the calculated average
 
-addsd xmm14, xmm12
-;xmm14 holds the perimeter (2x length + 2x width)
-addsd xmm15, xmm13;15 holds l + w
-;xmm11 holds "2.0"
-divsd xmm15, xmm11
-;xmm15 holds the average
-
+;output the calculated perimeter
 push qword 0
 push qword 0
 mov rax, 1
-mov rdi, perim
+mov rdi, perim                  ;"The perimeter is %8.15lf", 10, 0
 movsd xmm0, xmm14
 call printf
 pop rax
 pop rax
 
+;output the calculated average
 push qword 0
 push qword 0
 mov rax, 1
-mov rdi, avg
+mov rdi, avg                 ;"The length of the average side is %8.15lf", 10, 0
 movsd xmm0, xmm15
 call printf
 pop rax
@@ -151,31 +150,31 @@ pop rax
 push qword 0
 push qword 0
 mov rax, 0
-mov rdi, goodbye
+mov rdi, goodbye                ;"I hope you enjoyed your rectangle.", 10,
+    ;"The assembly program will send the perimeter to the main function.", 10, 0
 call printf
 pop rax
 pop rax
 
-
-
-movsd xmm0, xmm14
+;prepare the calculated perimeter to be returned.
+movsd xmm0, xmm14               ;xmm0 holds the calculated perimeter
 
 ;restore the registers from the stack
-popf                                                        ;Restore rflags
-pop rbx                                                     ;Restore rbx
-pop r15                                                     ;Restore r15
-pop r14                                                     ;Restore r14
-pop r13                                                     ;Restore r13
-pop r12                                                     ;Restore r12
-pop r11                                                     ;Restore r11
-pop r10                                                     ;Restore r10
-pop r9                                                      ;Restore r9
-pop r8                                                      ;Restore r8
-pop rcx                                                     ;Restore rcx
-pop rdx                                                     ;Restore rdx
-pop rsi                                                     ;Restore rsi
-pop rdi                                                     ;Restore rdi
-pop rbp                                                     ;Restore rbp
+popf
+pop rbx
+pop r15
+pop r14
+pop r13
+pop r12
+pop r11
+pop r10
+pop r9
+pop r8
+pop rcx
+pop rdx
+pop rsi
+pop rdi
+pop rbp
 
-
+;the calculated perimeter will be returned
 ret
